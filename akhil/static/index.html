@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to Rev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="revolt-logo-container">
+        <div class="revolt-logo">REVOLT</div>
+    </div>
+    
+    <div class="theme-switch-container">
+        <label class="theme-switch-label">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="main-container">
+        <div class="voice-interface">
+            <div class="robot-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h1 class="title">Talk to Rev</h1>
+            
+            <div class="voice-button-container">
+                <button class="voice-button" id="micButton" disabled>
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <div class="recording-indicator" id="recordingIndicator">
+                    <div class="pulse-ring"></div>
+                </div>
+            </div>
+            
+                            <div class="status-indicator" id="status">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-text" id="statusText">Connecting...</span>
+                </div>
+                
+                <!-- Voice Settings Panel -->
+                <div class="voice-settings" id="voiceSettings">
+                    <button class="settings-toggle" onclick="toggleVoiceSettings()">
+                        <i class="fas fa-cog"></i> Voice Settings
+                    </button>
+                    <div class="settings-panel" id="settingsPanel">
+                        <h4>Voice Options</h4>
+                        <div class="setting-group">
+                            <label>Speed:</label>
+                            <input type="range" id="voiceSpeed" min="0.5" max="2.0" step="0.1" value="1.1">
+                            <span id="speedValue">1.1x</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>Pitch:</label>
+                            <input type="range" id="voicePitch" min="0.5" max="2.0" step="0.05" value="1.05">
+                            <span id="pitchValue">1.05</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>Voice:</label>
+                            <select id="voiceSelect">
+                                <option value="auto">Auto-select best</option>
+                            </select>
+                        </div>
+                        <button onclick="testVoice()" class="test-voice-btn">
+                            <i class="fas fa-play"></i> Test Voice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

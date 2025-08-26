@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+        #log { background: #f8f9fa; padding: 10px; border-radius: 5px; height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Voice Chat Debug Test</h1>
+    
+    <div id="status"></div>
+    
+    <button onclick="testMicrophone()">Test Microphone Access</button>
+    <button onclick="testWebSocket()">Test WebSocket Connection</button>
+    <button onclick="testRecording()">Test Recording</button>
+    <button onclick="clearLog()">Clear Log</button>
+    
+    <h3>Debug Log:</h3>
+    <div id="log"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        async function testMicrophone() {
+            log('Testing microphone access...');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        sampleRate: 16000,
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    } 
+                });
+                log('✅ Microphone access granted successfully', 'success');
+                updateStatus('Microphone access granted', 'success');
+                stream.getTracks().forEach(track => track.stop());
+            } catch (error) {
+                log(`❌ Microphone access failed: ${error.message}`, 'error');
+                updateStatus(`Microphone access failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testWebSocket() {
+            log('Testing WebSocket connection...');
+            const ws = new WebSocket('ws://localhost:8000/ws/debug_test');
+            
+            ws.onopen = () => {
+                log('✅ WebSocket connection established', 'success');
+                updateStatus('WebSocket connected', 'success');
+                ws.close();
+            };
+            
+            ws.onerror = (error) => {
+                log(`❌ WebSocket connection failed: ${error}`, 'error');
+                updateStatus('WebSocket connection failed', 'error');
+            };
+            
+            ws.onclose = () => {
+                log('WebSocket connection closed', 'info');
+            };
+        }
+
+        async function testRecording() {
+            log('Testing recording functionality...');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        sampleRate: 16000,
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    } 
+                });
+                
+                const mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+                
+                const audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                        log(`Audio chunk received: ${event.data.size} bytes`);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    log(`✅ Recording completed: ${audioBlob.size} bytes total`, 'success');
+                    updateStatus(`Recording completed: ${audioBlob.size} bytes`, 'success');
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                log('Recording started... (will stop in 3 seconds)');
+                
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                }, 3000);
+                
+            } catch (error) {
+                log(`❌ Recording test failed: ${error.message}`, 'error');
+                updateStatus(`Recording failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run basic tests
+        window.onload = () => {
+            log('Page loaded, running basic tests...');
+            testWebSocket();
+        };
+    </script>
+</body>
+</html>

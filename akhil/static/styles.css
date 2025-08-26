@@ -1,0 +1,403 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #00d4aa;
+    --secondary-color: #1a1a1a;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --border-color: #e5e7eb;
+    --message-bg: #f8f9fa;
+    --user-message-bg: #00d4aa;
+    --user-message-text: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+}
+
+[data-theme="dark"] {
+    --background-color: #1a1a1a;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --message-bg: #2a2a2a;
+    --secondary-color: #ffffff;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.revolt-logo-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.revolt-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: 2px;
+}
+
+.theme-switch-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.theme-switch-label {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    cursor: pointer;
+}
+
+.theme-switch-label input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.voice-interface {
+    text-align: center;
+    width: 100%;
+}
+
+.robot-icon {
+    font-size: 80px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.robot-icon i {
+    background: linear-gradient(135deg, var(--primary-color), #00b894);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.voice-button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.voice-button {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: none;
+    background: #ef4444;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.voice-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+}
+
+.voice-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.voice-button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.voice-button.recording {
+    background: #dc2626;
+    animation: recording-pulse 1.5s infinite;
+}
+
+@keyframes recording-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.5);
+    }
+}
+
+.recording-indicator {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    display: none;
+}
+
+.recording-indicator.active {
+    display: block;
+}
+
+.pulse-ring {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #ef4444;
+    border-radius: 50%;
+    animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    transition: background-color 0.3s ease;
+}
+
+.status-dot.connected {
+    background: #10b981;
+}
+
+.status-dot.connecting {
+    background: #f59e0b;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 80px 15px 30px;
+    }
+    
+    .title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .voice-button {
+        width: 100px;
+        height: 100px;
+        font-size: 32px;
+    }
+    
+    .robot-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+    
+    .revolt-logo-container,
+    .theme-switch-container {
+        top: 15px;
+    }
+    
+    .revolt-logo-container {
+        left: 15px;
+    }
+    
+    .theme-switch-container {
+        right: 15px;
+    }
+}
+
+/* Voice Settings Panel */
+.voice-settings {
+    position: relative;
+    margin-top: 20px;
+}
+
+.settings-toggle {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.settings-toggle:hover {
+    background: var(--accent-hover);
+}
+
+.settings-panel {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 10px;
+    min-width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+}
+
+.settings-panel.show {
+    display: block;
+}
+
+.settings-panel h4 {
+    margin: 0 0 12px 0;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.setting-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+
+.setting-group label {
+    min-width: 50px;
+    color: var(--text-secondary);
+}
+
+.setting-group input[type="range"] {
+    flex: 1;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    outline: none;
+}
+
+.setting-group input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.setting-group span {
+    min-width: 40px;
+    text-align: right;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.setting-group select {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.test-voice-btn {
+    width: 100%;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.test-voice-btn:hover {
+    background: var(--accent-hover);
+}
